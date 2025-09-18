@@ -1,98 +1,191 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# RentalCar API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descrição
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeto é uma API construída com **NestJS** que permite gerenciar usuários e veículos de uma plataforma de aluguel e venda de carros. A API possui autenticação JWT, refresh tokens e suporte a TOTP (2FA).
 
-## Description
+## Tecnologias Utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+* NestJS
+* TypeScript
+* MongoDB (com Mongoose)
+* Docker (opcional para MongoDB)
+* bcrypt (para hash de senhas)
+* JWT (Json Web Token)
+* otplib (para TOTP)
+* QRCode (geração de QR Code para TOTP)
+* Sharp (manipulação de imagens)
 
-## Project setup
+## Instalação
+
+1. Clone o repositório:
 
 ```bash
-$ npm install
+git clone <repo-url>
+cd rentalcar-api
 ```
 
-## Compile and run the project
+2. Instale as dependências:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+3. Configure o MongoDB:
+
+* Usando Docker:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=rootpassword mongo
 ```
 
-## Deployment
+* Ou instale MongoDB localmente e configure em `AppModule`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+4. Rode a aplicação:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Estrutura do Projeto
 
-## Resources
+```
+src/
+  auth/
+    auth.controller.ts
+    auth.service.ts
+  users/
+    users.controller.ts
+    users.service.ts
+    dto/
+      create-user.dto.ts
+    entities/
+      user.entity.ts
+  vehicles/
+    vehicles.controller.ts
+    vehicles.service.ts
+    schemas/
+      vehicle.schema.ts
+  app.module.ts
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## Endpoints
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Usuários
 
-## Support
+* **POST /users** - Cria um novo usuário.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+  ```json
+  {
+    "nome": "Raphael Diniz",
+    "email": "raphael@test.com",
+    "senha": "123456",
+    "cpf": "12345678900",
+    "endereco": "Rua Exemplo, 123"
+  }
+  ```
 
-## Stay in touch
+### Auth
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+* **POST /auth/login** - Login do usuário com JWT e TOTP opcional.
 
-## License
+  ```json
+  {
+    "email": "raphael@test.com",
+    "senha": "123456",
+    "totp": "123456" // opcional se TOTP habilitado
+  }
+  ```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+  Retorna:
+
+  ```json
+  {
+    "access_token": "...",
+    "refresh_token": "..."
+  }
+  ```
+
+* **POST /auth/refresh** - Atualiza o access\_token usando o refresh token.
+
+  ```json
+  {
+    "userId": "<user-id>",
+    "refreshToken": "<refresh-token>"
+  }
+  ```
+
+  Retorna:
+
+  ```json
+  {
+    "access_token": "..."
+  }
+  ```
+
+* **POST /auth/enable-totp** - Habilita TOTP para o usuário e retorna QR Code em Base64.
+
+  ```json
+  {
+    "userId": "<user-id>"
+  }
+  ```
+
+### Veículos
+
+* **POST /vehicles/upload-multiple** - Faz upload de até 5 imagens, gera thumbnails e cria veículo.
+
+  * `multipart/form-data` com campos:
+
+    * `files`: arquivos de imagem
+    * demais campos do veículo no corpo (ex: modelo, marca, ano)
+
+## Fluxo de Autenticação
+
+```mermaid
+flowchart TD
+    A[Usuário] -->|POST /auth/login| B[AuthService]
+    B --> C{Usuário existe?}
+    C -- Não --> D[Erro: Credenciais inválidas]
+    C -- Sim --> E[Verifica senha com bcrypt]
+    E --> F{Senha correta?}
+    F -- Não --> D
+    F -- Sim --> G{TOTP habilitado?}
+    G -- Sim --> H[Verifica código TOTP]
+    H --> I{Código válido?}
+    I -- Não --> D
+    I -- Sim --> J[Gera JWT e Refresh Token]
+    G -- Não --> J
+    J --> K[Retorna {access_token, refresh_token}]
+
+    L[Usuário] -->|POST /auth/refresh| M[AuthService]
+    M --> N{Refresh token válido?}
+    N -- Não --> D
+    N -- Sim --> O[Gera novo access_token]
+    O --> P[Retorna novo access_token]
+```
+
+## Testando a API
+
+1. **Criar usuário:** POST /users
+2. **Login:** POST /auth/login
+3. **Receber tokens:** Guardar `access_token` e `refresh_token`
+4. **Refresh token:** POST /auth/refresh usando `userId` e `refresh_token`
+5. **Ativar TOTP:** POST /auth/enable-totp e usar código TOTP para próximos logins
+
+## Observações
+
+* Senhas são armazenadas de forma segura com **bcrypt**.
+* Refresh tokens são gerenciados por usuário, podendo existir múltiplos válidos.
+* TOTP é opcional, mas recomendado para segurança adicional.
+* Upload de imagens gera thumbnails automáticos em WebP.
+
+## Executando Testes
+
+* Utilize ferramentas como **Postman** ou **Insomnia**.
+* Para endpoints que exigem `application/json`, configure o `Content-Type`.
+* Para upload de arquivos, use `multipart/form-data`.
+
+---
+
+**Desenvolvido por Raphael Aloisio Diniz**

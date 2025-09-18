@@ -12,6 +12,10 @@ export interface UserEntity {
   senha: string;
   cpf: string;
   endereco?: string;
-  matricula?: string;
-  role: UserRole; // 🔹 obrigatório
+  role: UserRole;
+  // 🔹 Adicionar campos para autenticação
+  totpSecret?: string;
+  isTotpEnabled?: boolean;
+  refreshTokens?: string[]; // 🔹 Tipagem correta do array
 }
+

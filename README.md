@@ -140,30 +140,6 @@ src/
     * `files`: arquivos de imagem
     * demais campos do veículo no corpo (ex: modelo, marca, ano)
 
-## Fluxo de Autenticação
-
-```mermaid
-flowchart TD
-    A[Usuário] -->|POST /auth/login| B[AuthService]
-    B --> C{Usuário existe?}
-    C -- Não --> D[Erro: Credenciais inválidas]
-    C -- Sim --> E[Verifica senha com bcrypt]
-    E --> F{Senha correta?}
-    F -- Não --> D
-    F -- Sim --> G{TOTP habilitado?}
-    G -- Sim --> H[Verifica código TOTP]
-    H --> I{Código válido?}
-    I -- Não --> D
-    I -- Sim --> J[Gera JWT e Refresh Token]
-    G -- Não --> J
-    J --> K[Retorna {access_token, refresh_token}]
-
-    L[Usuário] -->|POST /auth/refresh| M[AuthService]
-    M --> N{Refresh token válido?}
-    N -- Não --> D
-    N -- Sim --> O[Gera novo access_token]
-    O --> P[Retorna novo access_token]
-```
 
 ## Testando a API
 

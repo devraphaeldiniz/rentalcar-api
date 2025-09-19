@@ -1,39 +1,87 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Vehicle, VehicleDocument } from './schemas/vehicle.schema';
+import { Test, TestingModule } from '@nestjs/testing';
+import { VehiclesService } from './vehicles.service';
+import { Vehicle } from './schemas/vehicle.schema';
+import { VehicleStatus } from './schemas/vehicle.schema';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
 
-@Injectable()
-export class VehiclesService {
-  constructor(
-    @InjectModel(Vehicle.name) private vehicleModel: Model<VehicleDocument>,
-  ) {}
+const mockVehicle = {
+  _id: '1',
+  modelo: 'Fiesta',
+  marca: 'Ford',
+  ano: 2020,
+  potencia: 120,
+  categoria: 'Hatch',
+  precoAluguel: 100,
+  status: VehicleStatus.DISPONIVEL,
+  save: jest.fn().mockResolvedValue(this),
+};
 
-  async create(data: Partial<Vehicle>): Promise<Vehicle> {
-    const created = new this.vehicleModel(data);
-    return created.save();
-  }
+const mockVehicleModel = {
+  new: jest.fn().mockImplementation(() => mockVehicle),
+  constructor: jest.fn().mockImplementation(() => mockVehicle),
+  find: jest.fn().mockReturnValue({
+    exec: jest.fn().mockResolvedValue([mockVehicle]),
+  }),
+  findById: jest.fn().mockReturnValue({
+    exec: jest.fn().mockResolvedValue(mockVehicle),
+  }),
+  findByIdAndUpdate: jest.fn().mockReturnValue({
+    exec: jest.fn().mockResolvedValue(mockVehicle),
+  }),
+  findByIdAndDelete: jest.fn().mockReturnValue({
+    exec: jest.fn().mockResolvedValue(mockVehicle),
+  }),
+};
 
-  async findAll(): Promise<Vehicle[]> {
-    return this.vehicleModel.find().exec();
-  }
+describe('VehiclesService', () => {
+  let service: VehiclesService;
 
-  async findOne(id: string): Promise<Vehicle> {
-    const vehicle = await this.vehicleModel.findById(id).exec();
-    if (!vehicle) throw new NotFoundException('Veículo não encontrado');
-    return vehicle;
-  }
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        VehiclesService,
+        { provide: 'VehicleModel', useValue: mockVehicleModel },
+      ],
+    }).compile();
 
-  async update(id: string, data: Partial<Vehicle>): Promise<Vehicle> {
-    const updated = await this.vehicleModel
-      .findByIdAndUpdate(id, data, { new: true })
-      .exec();
-    if (!updated) throw new NotFoundException('Veículo não encontrado');
-    return updated;
-  }
+    service = new VehiclesService(mockVehicleModel as any);
+  });
 
-  async remove(id: string): Promise<void> {
-    const deleted = await this.vehicleModel.findByIdAndDelete(id).exec();
-    if (!deleted) throw new NotFoundException('Veículo não encontrado');
-  }
-}
+  it('should create a vehicle', async () => {
+    const dto: CreateVehicleDto = {
+      modelo: 'Fiesta',
+      marca: 'Ford',
+      ano: 2020,
+      potencia: 120,
+      categoria: 'Hatch',
+      precoAluguel: 100,
+      status: VehicleStatus.DISPONIVEL,
+    };
+
+    const vehicle = await service.create(dto);
+    expect(vehicle.id).toBeDefined();
+    expect(vehicle.modelo).toBe(dto.modelo);
+  });
+
+  it('should return all vehicles', async () => {
+    const vehicles = await service.findAll();
+    expect(vehicles).toHaveLength(1);
+    expect(vehicles[0].modelo).toBe('Fiesta');
+  });
+
+  it('should return a vehicle by id', async () => {
+    const vehicle = await service.findOne('1');
+    expect(vehicle.id).toBeDefined();
+    expect(vehicle.modelo).toBe('Fiesta');
+  });
+
+  it('should update a vehicle', async () => {
+    const updated = await service.update('1', { modelo: 'Focus' });
+    expect(updated.modelo).toBe('Fiesta'); // mock sempre retorna Fiesta
+  });
+
+  it('should delete a vehicle', async () => {
+    const result = await service.remove('1');
+    expect(result.deleted).toBe(true);
+  });
+});

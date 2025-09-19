@@ -3,6 +3,12 @@ import { Document } from 'mongoose';
 
 export type VehicleDocument = Vehicle & Document;
 
+export enum VehicleStatus {
+  DISPONIVEL = 'disponivel',
+  ALUGADO = 'alugado',
+  MANUTENCAO = 'manutencao',
+}
+
 @Schema({ timestamps: true })
 export class Vehicle {
   @Prop({ required: true })
@@ -15,7 +21,7 @@ export class Vehicle {
   ano: number;
 
   @Prop({ required: true })
-  potencia: string;
+  potencia: number;
 
   @Prop({ required: true })
   categoria: string;
@@ -23,32 +29,8 @@ export class Vehicle {
   @Prop({ required: true })
   precoAluguel: number;
 
-  @Prop([String])
-  imagens: string[];
-
-  @Prop()
-  descricao?: string;
-
-  @Prop()
-  transmissao?: string;
-
-  @Prop()
-  combustivel?: string;
-
-  @Prop()
-  portas?: number;
-
-  @Prop()
-  assentos?: number;
-
-  @Prop()
-  quilometragem?: number;
-
-  @Prop()
-  placa?: string;
-
-  @Prop({ default: 'disponivel' })
-  status: 'disponivel' | 'manutencao' | 'indisponivel';
+  @Prop({ enum: VehicleStatus, default: VehicleStatus.DISPONIVEL })
+  status: VehicleStatus;
 }
 
 export const VehicleSchema = SchemaFactory.createForClass(Vehicle);

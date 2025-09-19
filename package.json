@@ -1,7 +1,7 @@
 {
   "name": "rentalcar-api",
   "version": "0.0.1",
-  "description": "",
+  "description": "Este projeto é uma API construída com **NestJS** que permite gerenciar usuários e veículos de uma plataforma de aluguel e venda de carros. A API possui autenticação JWT, refresh tokens e suporte a TOTP (2FA).",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -87,5 +87,19 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devraphaeldiniz/rentalcar-api.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/devraphaeldiniz/rentalcar-api/issues"
+  },
+  "homepage": "https://github.com/devraphaeldiniz/rentalcar-api#readme"
 }

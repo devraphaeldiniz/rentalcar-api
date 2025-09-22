@@ -1,15 +1,16 @@
+// src/vehicles/schemas/vehicle.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type VehicleDocument = Vehicle & Document;
 
 export enum VehicleStatus {
-  DISPONIVEL = 'disponivel',
-  ALUGADO = 'alugado',
-  MANUTENCAO = 'manutencao',
+  AVAILABLE = 'available',
+  RENTED = 'rented',
+  MAINTENANCE = 'maintenance',
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true }) // timestamps habilita createdAt e updatedAt
 export class Vehicle {
   @Prop({ required: true })
   modelo: string;
@@ -21,15 +22,18 @@ export class Vehicle {
   ano: number;
 
   @Prop({ required: true })
-  potencia: number;
+  potencia: string; // string para testes compatíveis
 
   @Prop({ required: true })
   categoria: string;
 
+  @Prop()
+  imagem?: string;
+
   @Prop({ required: true })
   precoAluguel: number;
 
-  @Prop({ enum: VehicleStatus, default: VehicleStatus.DISPONIVEL })
+  @Prop({ type: String, enum: VehicleStatus, default: VehicleStatus.AVAILABLE })
   status: VehicleStatus;
 }
 

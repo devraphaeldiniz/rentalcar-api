@@ -1,3 +1,4 @@
+// src/vehicles/dto/create-vehicle.dto.ts
 import { IsString, IsNumber, IsEnum, IsOptional } from 'class-validator';
 import { VehicleStatus } from '../schemas/vehicle.schema';
 
@@ -17,10 +18,13 @@ export class CreateVehicleDto {
   @IsString()
   categoria: string;
 
+  @IsString()
+  imagem: string;
+
   @IsNumber()
   precoAluguel: number;
 
-  @IsOptional()
   @IsEnum(VehicleStatus)
-  status?: VehicleStatus;
+  @IsOptional()
+  status?: VehicleStatus = VehicleStatus.AVAILABLE;
 }

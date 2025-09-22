@@ -1,3 +1,4 @@
+
 # RentalCar API
 
 ## Descrição
@@ -21,7 +22,7 @@ Este projeto é uma API construída com **NestJS** que permite gerenciar usuári
 1. Clone o repositório:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/devraphaeldiniz/rentalcar-api
 cd rentalcar-api
 ```
 
@@ -93,7 +94,7 @@ src/
   {
     "email": "raphael@test.com",
     "senha": "123456",
-    "totp": "123456" // opcional se TOTP habilitado
+    "totp": "123456"
   }
   ```
 
@@ -106,7 +107,7 @@ src/
   }
   ```
 
-* **POST /auth/refresh** - Atualiza o access\_token usando o refresh token.
+* **POST /auth/refresh** - Atualiza o access_token usando o refresh token.
 
   ```json
   {
@@ -133,13 +134,30 @@ src/
 
 ### Veículos
 
-* **POST /vehicles/upload-multiple** - Faz upload de até 5 imagens, gera thumbnails e cria veículo.
+* **POST /vehicles** - Cria um novo veículo.
+
+  ```json
+  {
+    "modelo": "Civic",
+    "marca": "Honda",
+    "ano": 2022,
+    "potencia": "140",
+    "categoria": "Sedan",
+    "imagem": "civic.jpg",
+    "precoAluguel": 150,
+    "status": "available"
+  }
+  ```
+
+* **GET /vehicles** - Lista todos os veículos
+* **GET /vehicles/:id** - Busca veículo pelo ID
+* **PUT /vehicles/:id** - Atualiza veículo pelo ID
+* **DELETE /vehicles/:id** - Remove veículo pelo ID
+* **POST /vehicles/upload-multiple** - Faz upload de até 5 imagens, gera thumbnails e cria veículo
 
   * `multipart/form-data` com campos:
-
     * `files`: arquivos de imagem
     * demais campos do veículo no corpo (ex: modelo, marca, ano)
-
 
 ## Testando a API
 

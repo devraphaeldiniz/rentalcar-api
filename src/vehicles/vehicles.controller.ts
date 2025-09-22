@@ -1,3 +1,4 @@
+// src/vehicles/vehicles.controller.ts
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
@@ -10,17 +11,23 @@ export class VehiclesController {
 
   @Post()
   async create(@Body() createVehicleDto: CreateVehicleDto): Promise<VehicleEntity> {
-    return await this.vehiclesService.create(createVehicleDto);
+    return this.vehiclesService.create(createVehicleDto);
+  }
+
+  // Novo endpoint para criar vários veículos de uma vez
+  @Post('bulk')
+  async createBulk(@Body() createVehiclesDto: CreateVehicleDto[]): Promise<VehicleEntity[]> {
+    return this.vehiclesService.createBulk(createVehiclesDto);
   }
 
   @Get()
   async findAll(): Promise<VehicleEntity[]> {
-    return await this.vehiclesService.findAll();
+    return this.vehiclesService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<VehicleEntity> {
-    return await this.vehiclesService.findOne(id);
+    return this.vehiclesService.findOne(id);
   }
 
   @Put(':id')
@@ -28,11 +35,11 @@ export class VehiclesController {
     @Param('id') id: string,
     @Body() updateVehicleDto: UpdateVehicleDto,
   ): Promise<VehicleEntity> {
-    return await this.vehiclesService.update(id, updateVehicleDto);
+    return this.vehiclesService.update(id, updateVehicleDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<{ deleted: boolean }> {
-    return await this.vehiclesService.remove(id);
+    return this.vehiclesService.remove(id);
   }
 }

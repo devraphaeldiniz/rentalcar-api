@@ -1,9 +1,10 @@
 // src/vehicles/vehicles.controller.ts
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehicleEntity } from './entities/vehicle.entity';
+import { GetVehiclesQueryDto } from './dto/get-vehicles-query.dto';
 
 @Controller('vehicles')
 export class VehiclesController {
@@ -14,15 +15,14 @@ export class VehiclesController {
     return this.vehiclesService.create(createVehicleDto);
   }
 
-  // Novo endpoint para criar vários veículos de uma vez
   @Post('bulk')
   async createBulk(@Body() createVehiclesDto: CreateVehicleDto[]): Promise<VehicleEntity[]> {
     return this.vehiclesService.createBulk(createVehiclesDto);
   }
 
   @Get()
-  async findAll(): Promise<VehicleEntity[]> {
-    return this.vehiclesService.findAll();
+  async findAll(@Query() query: GetVehiclesQueryDto) {
+    return this.vehiclesService.findAll(query);
   }
 
   @Get(':id')

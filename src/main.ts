@@ -1,19 +1,33 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
-  // 🔹 Ativa validação automática nos DTOs
+  app.setGlobalPrefix('api');
+
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // remove campos não definidos no DTO
-      forbidNonWhitelisted: true, // gera erro se enviar campos extras
-      transform: true, // transforma os tipos automaticamente (ex: string -> number)
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  // 🔹 Tratamento global de erros
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  // 🔹 Interceptor global de resposta
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+
+  console.log(`🚀 Servidor rodando em http://localhost:${port}/api`);
 }
+
 bootstrap();

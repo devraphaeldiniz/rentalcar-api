@@ -6,6 +6,10 @@ import { VehicleStatus } from '../schemas/vehicle.schema';
 export class GetVehiclesQueryDto {
   @IsOptional()
   @IsString()
+  modelo?: string;
+
+  @IsOptional()
+  @IsString()
   marca?: string;
 
   @IsOptional()
@@ -19,12 +23,24 @@ export class GetVehiclesQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(1)
-  page?: number = 1;
+  @Min(1900)
+  anoMin?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1900)
+  anoMax?: number;
 
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  limit?: number = 10;
+  page?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  limit?: number;
 }

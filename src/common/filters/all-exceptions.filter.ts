@@ -1,4 +1,3 @@
-// src/common/filters/all-exceptions.filter.ts
 import {
   ExceptionFilter,
   Catch,
@@ -18,31 +17,43 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    let status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = 'Erro interno do servidor';
+    let details: any = null;
 
-    let message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : 'Erro interno no servidor.';
+    // 🔹 Erros do tipo HttpException (BadRequest, NotFound, etc.)
+    if (exception instanceof HttpException) {
+      const exceptionResponse = exception.getResponse();
+      status = exception.getStatus();
 
-    if (typeof message === 'object' && 'message' in message) {
-      message = (message as any).message;
+      if (typeof exceptionResponse === 'string') {
+        message = exceptionResponse;
+      } else if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+        const r = exceptionResponse as any;
+        message = r.message || message;
+        details = r.error || null;
+      }
+    }
+    // 🔹 Erros genéricos (ex: exceptions do Mongo ou runtime)
+    else if (exception instanceof Error) {
+      message = exception.message;
+      details = exception.stack?.split('\n').slice(0, 3); // só mostra as 3 primeiras linhas
     }
 
-    const errorResponse = {
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      message,
-    };
-
+    // 🔹 Log completo no servidor
     this.logger.error(
-      `[${request.method}] ${request.url} → ${JSON.stringify(errorResponse)}`,
+      `[${request.method}] ${request.url} → ${message}`,
+      (exception as any)?.stack,
     );
 
-    response.status(status).json(errorResponse);
+    // 🔹 Retorno padronizado (compatível com ResponseInterceptor)
+    response.status(status).json({
+      success: false,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      statusCode: status,
+      message,
+      details,
+    });
   }
 }
